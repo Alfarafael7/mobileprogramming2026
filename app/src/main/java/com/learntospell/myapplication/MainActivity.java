@@ -1,5 +1,7 @@
 package com.learntospell.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textSkor;
     private int skorBenar = 0;
     private int skorSalah = 0;
+    int JUMLAH_SOAL = 10;
+    private int soalKe = 0;
 
     private static final String TAG_TIMER = "Timer";
     private static final long DURASI_SOAL = 15000;
@@ -137,6 +141,39 @@ public class MainActivity extends AppCompatActivity {
         letsPlay();
     }
 
+    private String kodeLevel() {
+        int id = radioGroupLevel.getCheckedRadioButtonId();
+        if (id == R.id.radioEasy) return "Easy";
+        if (id == R.id.radioMedium) return "Medium";
+        return "Hard";
+    }
+
+    private void mulaiSesiBaru() {
+        soalKe = 0;
+        skorBenar = 0;
+        skorSalah = 0;
+        letsPlay();
+    }
+
+    private void selesaiSesi() {
+        hentikanTimer();
+        sudahDijawab = true;
+        tampilkanRingkasan();
+    }
+
+    private void tampilkanRingkasan() {
+        int nilai = skorBenar * 100 / JUMLAH_SOAL;
+        new AlertDialog.Builder(this)
+                .setTitle("Sesi selesai")
+                .setMessage("Level: " + kodeLevel() + "Nilai: " + nilai)
+                .setPositiveButton("Mau main lagi?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mulaiSesiBaru();
+                    }
+                }).show();
+    }
+
     private void pilihLevel(int checkedId) {
         if (checkedId == R.id.radioEasy) {
             kamus = kamusEasy;
@@ -152,32 +189,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void letsPlay() {
-        opsiJawaban = new ArrayList<>();
-        soal = null;
-        textHasil.setText("");
+        if (soalKe <= JUMLAH_SOAL) {
+            soalKe++;
+            opsiJawaban = new ArrayList<>();
+            soal = null;
+            textHasil.setText("");
 
 
-        ArrayList<String> acak = new ArrayList<>(kata);
-        Collections.shuffle(acak);
-        soal= acak.get(0);
+            ArrayList<String> acak = new ArrayList<>(kata);
+            Collections.shuffle(acak);
+            soal= acak.get(0);
 
-        for (int i = 0; i < JUMLAH_OPSI; i++) {
-            opsiJawaban.add(kamus.get(acak.get(i)));
+            for (int i = 0; i < JUMLAH_OPSI; i++) {
+                opsiJawaban.add(kamus.get(acak.get(i)));
+            }
+            Collections.shuffle(opsiJawaban);
+
+            TextView textSoal = findViewById(R.id.vocab);
+            textSoal.setText(soal);
+            // adapter.setOpsi(opsiJawaban);
+            textHasil.setText("");
+            adapter.setOpsi(opsiJawaban, opsiJawaban.indexOf(kamus.get(soal)));
+
+            sisaMs = DURASI_SOAL;
+            mulaiTimer(sisaMs);
+        } else {
+            selesaiSesi();
         }
-        Collections.shuffle(opsiJawaban);
-
-        TextView textSoal = findViewById(R.id.vocab);
-        textSoal.setText(soal);
-        // adapter.setOpsi(opsiJawaban);
-        textHasil.setText("");
-        adapter.setOpsi(opsiJawaban, opsiJawaban.indexOf(kamus.get(soal)));
-
-        sisaMs = DURASI_SOAL;
-        mulaiTimer(sisaMs);
-
-
     }
-
 
     private void periksaJawaban(int position) {
         hentikanTimer();
@@ -207,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSkor() {
-        textSkor.setText("Benar: " + skorBenar + "  Salah: " + skorSalah);
+        textSkor.setText("Soal no: " + (soalKe+1) + " Benar: " + skorBenar + "  Salah: " + skorSalah);
     }
 
     private void mulaiTimer(long durasi) {
@@ -296,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putLong(KEY_SISA_MS, sisaMs);
         outState.putInt(KEY_LEVEL, radioGroupLevel.getCheckedRadioButtonId() );
         Log.d(TAG_LC, "onSaveInstanceState, skor=" + skorBenar + "/" + skorSalah
-        + radioGroupLevel.getCheckedRadioButtonId());
+                + radioGroupLevel.getCheckedRadioButtonId());
     }
 
 }
