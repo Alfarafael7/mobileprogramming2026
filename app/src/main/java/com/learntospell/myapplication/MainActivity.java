@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         updateSkor();
         textWaktu = findViewById(R.id.waktu);
 
-
         radioGroupLevel = findViewById(R.id.radioGroupLevel);
 
 
