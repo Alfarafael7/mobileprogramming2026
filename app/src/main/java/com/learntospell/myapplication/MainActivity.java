@@ -2,6 +2,7 @@ package com.learntospell.myapplication;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textSkor;
     private int skorBenar = 0;
     private int skorSalah = 0;
-    int JUMLAH_SOAL = 10;
+    int JUMLAH_SOAL = 3;
     private int soalKe = 0;
 
     private static final String TAG_TIMER = "Timer";
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         int id = radioGroupLevel.getCheckedRadioButtonId();
         if (id == R.id.radioEasy) return "Easy";
         if (id == R.id.radioMedium) return "Medium";
-        return "Hard";
+        return "Difficult";
     }
 
     private void mulaiSesiBaru() {
@@ -158,7 +159,15 @@ public class MainActivity extends AppCompatActivity {
     private void selesaiSesi() {
         hentikanTimer();
         sudahDijawab = true;
-        tampilkanRingkasan();
+        Intent intent = new Intent(this, RingkasanHasil.class);
+        intent.putExtra("JUMLAH_BENAR", skorBenar);
+        intent.putExtra("JUMLAH_SALAH", skorSalah);
+        intent.putExtra("JUMLAH_SOAL", JUMLAH_SOAL);
+        intent.putExtra("LEVEL", kodeLevel());
+        startActivity(intent);
+
+        startActivity(intent);
+        // tampilkanRingkasan();
     }
 
     private void tampilkanRingkasan() {
