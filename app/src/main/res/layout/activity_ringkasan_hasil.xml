@@ -31,6 +31,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ListView
+        android:id="@+id/listSalah"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ringkasan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+        />
+
     <Button
         android:id="@+id/btnMainLagi"
         android:layout_width="0dp"
@@ -38,7 +47,7 @@
         android:layout_marginTop="16dp"
         android:text="Main Lagi"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/ringkasan"
+        app:layout_constraintTop_toBottomOf="@+id/listSalah"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
